@@ -1,1 +1,2 @@
+include ':physicaloidLibrary'
 include ':app'

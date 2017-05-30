@@ -1,5 +1,7 @@
 package com.example.emil.mcinterface;
 
+import android.content.Context;
+import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -11,13 +13,22 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+
+
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.physicaloid.lib.Physicaloid;
+import com.physicaloid.lib.usb.driver.uart.ReadLisener;
+
+import java.io.UnsupportedEncodingException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,11 +41,13 @@ public class MainActivity extends AppCompatActivity {
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     /**
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+    Physicaloid mPhysicaloid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +66,9 @@ public class MainActivity extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+
+
+        mPhysicaloid = new Physicaloid(this);
 
     }
 
@@ -73,8 +89,43 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+
+            if(mPhysicaloid.open()) { // default 9600bps
+                //setEnabledUi(true);
+
+
+                //****************************************************************
+                // TODO : add read callback
+                mPhysicaloid.addReadListener(new ReadLisener() {
+                    String readStr;
+
+                    // callback when reading one or more size buffer
+                    @Override
+                    public void onRead(int size) {
+                        byte[] buf = new byte[size];
+
+                        mPhysicaloid.read(buf, size);
+                        try {
+                            readStr = new String(buf, "UTF-8");
+                        } catch (UnsupportedEncodingException e) {
+                            Log.e(TAG, e.toString());
+                            return;
+                        }
+                        printToast(readStr);
+                        // UI thread
+                        // tvAppend(tvRead, readStr);
+                        // draws gesture on screen
+
+
+
+                        //  drawGesture(readStr);
+                        //   drawGesture("0 1 2 3 0");
+                    }
+                });
+            }
         }
+
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -127,4 +178,25 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
     }
+
+    Handler mHandler = new Handler();
+    private void printToast(final String str) {
+
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                Context context = getApplicationContext();
+
+
+//                CharSequence text = str;
+                final String s = str;
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast toast = Toast.makeText(context, s, duration);
+                toast.show();
+
+            }
+        });
+    }
+
 }
