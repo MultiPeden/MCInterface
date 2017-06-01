@@ -51,7 +51,6 @@ public class Navigation extends Fragment {
 
                 AlertDialog.Builder builder =
                         new AlertDialog.Builder(getContext()).
-                                setMessage("Message above the image").
                                 setPositiveButton("Afslut", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {

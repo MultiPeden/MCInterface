@@ -11,5 +11,6 @@
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:id="@+id/contactList"/>
+        android:id="@+id/contactList"
+        android:listSelector="@color/colorPrimaryDark"/>
 </RelativeLayout>

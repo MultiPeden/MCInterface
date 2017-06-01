@@ -6,6 +6,8 @@ import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.Fragment;
@@ -21,7 +23,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 
-
+import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +33,9 @@ import com.physicaloid.lib.Physicaloid;
 import com.physicaloid.lib.usb.driver.uart.ReadLisener;
 
 import java.io.UnsupportedEncodingException;
+
+import static com.example.emil.mcinterface.R.color.colorAccent;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private static final String TAG = MainActivity.class.getSimpleName();
-
+    private ListView contList;
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -53,6 +60,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+//disable touch
+    //    getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+     //           WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -67,11 +77,27 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
+//        mViewPager.setCurrentItem(2);
+//        ListView lview = (ListView) mViewPager.getChildAt(2);
+//        lview.setItemChecked(1, true);
 
-        mPhysicaloid = new Physicaloid(this);
+
+        //Contacts fragment = (Contacts) mSectionsPagerAdapter.getItem(mViewPager.getCurrentItem());
+
+       // contList = fragment.listView;
+
+    //    Context context = fragment.getContext();
+
+      //  ListView lv =(ListView) fragment.findViewById(R.id.contactList);
+       // lv.setItemChecked(2, true);
+        //View activeView = fragment.getView();
+//        activeView.setBackgroundColor(getResources().getColor(colorAccent));
+
+                mPhysicaloid = new Physicaloid(this);
+
+        //navigateFromSeq("0");
 
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -82,6 +108,23 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+///        Contacts fragment = (Contacts) mSectionsPagerAdapter.getItem(mViewPager.getCurrentItem());
+/*
+  //      fragment.listView.setItemChecked(2, true);
+
+        FragmentManager manager = getSupportFragmentManager();
+        Fragment fragment = manager.findFragmentById(R.id.contactList);
+*/
+/*
+        ListView lv2 = (ListView) this.findViewById(R.id.contactList);
+        ArrayAdapter lobj  = (ArrayAdapter) lv2.getAdapter();
+        AppCompatTextView v = (AppCompatTextView) lobj.getView(0,null,null);
+        v.setBackgroundColor(0x00FF00);
+        v.setText("jaaaaaaaaaaaa");
+        lobj.notifyDataSetChanged();
+        */
+
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
@@ -111,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
                             Log.e(TAG, e.toString());
                             return;
                         }
-                        printToast(readStr);
+                        navigateFromSeq(readStr);
                         // UI thread
                         // tvAppend(tvRead, readStr);
                         // draws gesture on screen
@@ -180,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     Handler mHandler = new Handler();
-    private void printToast(final String str) {
+    private void navigateFromSeq(final String str) {
 
         mHandler.post(new Runnable() {
             @Override
@@ -188,12 +231,35 @@ public class MainActivity extends AppCompatActivity {
                 Context context = getApplicationContext();
 
 
-//                CharSequence text = str;
-                final String s = str;
+                final String s = str.replaceAll("\\s", "");
+
                 int duration = Toast.LENGTH_SHORT;
 
                 Toast toast = Toast.makeText(context, s, duration);
                 toast.show();
+
+                TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+                switch (s){
+                    case "3":
+                        TabLayout.Tab tab1 = tabLayout.getTabAt(0);
+                        tab1.select();
+                        break;
+                    case "0":
+                        TabLayout.Tab tab2 = tabLayout.getTabAt(1);
+                        tab2.select();
+                        break;
+                    case "1":
+                        TabLayout.Tab tab3 = tabLayout.getTabAt(2);
+                        tab3.select();
+                        break;
+                    case "02":
+                        int tab_position = tabLayout.getSelectedTabPosition();
+                        if (tab_position == 0) {
+                            Contacts.rowInd++;
+                        }
+                    default:
+                        break;
+                }
 
             }
         });
