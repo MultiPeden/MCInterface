@@ -22,7 +22,7 @@ public class Navigation extends Fragment {
 
     public static int rowInd = 0;
     public ListView listView;
-    public MClistAdapter adapter;
+    public static MClistAdapter adapter;
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -34,6 +34,9 @@ public class Navigation extends Fragment {
         adapter = new MClistAdapter(getActivity(), contactItems);
         listView.setAdapter(adapter);
 
+
+
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
@@ -42,34 +45,32 @@ public class Navigation extends Fragment {
                 // TODO Auto-generated method stub
                 Log.v("TAG", "CLICKED row number: " + rowId);
 
-                AlertDialog.Builder builder=new AlertDialog.Builder(getContext());
-                builder.setCancelable(true);
-                builder.setTitle("Incoming Call");
-                builder.setPositiveButton("Accept",new DialogInterface.OnClickListener()
-                {
+                final View view1 = inflater.inflate(R.layout.navigator, null);
 
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        dialog.dismiss();
-                    }
-                });
-                builder.setNegativeButton("Reject",new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        dialog.dismiss();
-                    }
-                });
-                AlertDialog alert=builder.create();
-                alert.show();
+                AlertDialog.Builder builder =
+                        new AlertDialog.Builder(getContext()).
+                                setPositiveButton("Close", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                }).
+                                setView(view1);
+                builder.create().show();
             }
+
         });
 
 
 
         return rootView;
+    }
+
+    public static void updateMarked(){
+
+        if (rowInd < adapter.getCount()){
+            adapter.setMarked(rowInd);
+        }
     }
 }
 

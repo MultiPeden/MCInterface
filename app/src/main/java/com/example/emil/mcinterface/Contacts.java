@@ -90,7 +90,7 @@ public class Contacts extends Fragment {
 
     public static void updateMarked(){
 
-        if (rowInd < adapter.getCount()){
+        if (rowInd < adapter.getCount() && rowInd >= 0  ){
             adapter.setMarked(rowInd);
         }
     }

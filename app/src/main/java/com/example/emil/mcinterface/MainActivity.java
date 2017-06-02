@@ -226,6 +226,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Toast toast = Toast.makeText(context, s, duration);
                 toast.show();
+                int tab_position;
 
                 TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
                 switch (s){
@@ -242,11 +243,40 @@ public class MainActivity extends AppCompatActivity {
                         tab3.select();
                         break;
                     case "02":
-                        int tab_position = tabLayout.getSelectedTabPosition();
-                        if (tab_position == 0) {
-                            Contacts.rowInd++;
-                            Contacts.updateMarked();
-
+                        tab_position = tabLayout.getSelectedTabPosition();
+                        switch (tab_position) {
+                            case 0:
+                                Contacts.rowInd++;
+                                Contacts.updateMarked();
+                                break;
+                            case 1:
+                                Music.rowInd++;
+                                Music.updateMarked();
+                                break;
+                            case 2:
+                                Navigation.rowInd++;
+                                Navigation.updateMarked();
+                                break;
+                            default:
+                                break;
+                        }
+                    case "20":
+                        tab_position = tabLayout.getSelectedTabPosition();
+                        switch (tab_position) {
+                            case 0:
+                                Contacts.rowInd--;
+                                Contacts.updateMarked();
+                                break;
+                            case 1:
+                                Music.rowInd--;
+                                Music.updateMarked();
+                                break;
+                            case 2:
+                                Navigation.rowInd--;
+                                Navigation.updateMarked();
+                                break;
+                            default:
+                                break;
                         }
                     default:
                         break;
