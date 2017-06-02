@@ -20,49 +20,54 @@ import android.widget.ListView;
 
 public class Navigation extends Fragment {
 
+    public static int rowInd = 0;
+    public ListView listView;
+    public MClistAdapter adapter;
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.navigation, container, false);
-
+        View rootView = inflater.inflate(R.layout.contacts, container, false);
         String[] contactItems = {"Home", "Work", "Summer Cottage", "Parents"};
 
-        ListView listView = (ListView) rootView.findViewById(R.id.locationList);
-
-        ArrayAdapter<String> listViewAdapter = new ArrayAdapter<String>(
-                getActivity(),
-                android.R.layout.simple_list_item_1,
-                contactItems
-        );
-
-        listView.setAdapter(listViewAdapter);
+        listView = (ListView) rootView.findViewById(R.id.contactList);
+        adapter = new MClistAdapter(getActivity(), contactItems);
+        listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long rowId) {
-
+                adapter.setMarked(position);
                 // TODO Auto-generated method stub
                 Log.v("TAG", "CLICKED row number: " + rowId);
 
-                final View view1 = inflater.inflate(R.layout.navigator, null);
+                AlertDialog.Builder builder=new AlertDialog.Builder(getContext());
+                builder.setCancelable(true);
+                builder.setTitle("Incoming Call");
+                builder.setPositiveButton("Accept",new DialogInterface.OnClickListener()
+                {
 
-                AlertDialog.Builder builder =
-                        new AlertDialog.Builder(getContext()).
-                                setPositiveButton("Afslut", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                    }
-                                }).
-                                setView(view1);
-                 builder.create().show();
-
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        dialog.dismiss();
+                    }
+                });
+                builder.setNegativeButton("Reject",new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog alert=builder.create();
+                alert.show();
             }
-
         });
+
+
 
         return rootView;
     }

@@ -25,6 +25,8 @@ public class Contacts extends Fragment {
 
     public static int rowInd = 0;
     public ListView listView;
+    public static MClistAdapter adapter;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -33,28 +35,11 @@ public class Contacts extends Fragment {
 
         String[] contactItems = {"Felix", "Hektor", "Hugo", "Jens", "Niels", "Poul", "Dennis", "Troels", "Kurt", "Tristan", "Torsten", "Jussi", "HP", "Ludvig", "Anders"};
 
-         listView = (ListView) rootView.findViewById(R.id.contactList);
-        MClistAdapter adapter = new MClistAdapter(getActivity(), contactItems);
+        listView = (ListView) rootView.findViewById(R.id.contactList);
+        adapter = new MClistAdapter(getActivity(), contactItems);
         listView.setAdapter(adapter);
 
 
-/*
-        MClistAdapter<String> listViewAdapter = new ArrayAdapter<String>(
-                getActivity(),
-                android.R.layout.simple_list_item_1,
-                contactItems
-        );
-
-        listView.setAdapter(listViewAdapter);
-*/
-
-        // highlight row
-
-//        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-
-  //      listView.setSelector(android.R.color.darker_gray);
-
-        //listView.setSelection(0);
 
         Context context = getActivity();
         CharSequence text = "Hello toast!";
@@ -64,16 +49,12 @@ public class Contacts extends Fragment {
         toast.show();
 
 
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            //AlertDialog.Builder adb = new AlertDialog.Builder(
-            //        getContext());
-
-
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long rowId) {
-
+                adapter.setMarked(position);
                 // TODO Auto-generated method stub
                 Log.v("TAG", "CLICKED row number: " + rowId);
 
@@ -91,7 +72,6 @@ public class Contacts extends Fragment {
                 });
                 builder.setNegativeButton("Reject",new DialogInterface.OnClickListener()
                 {
-
                     @Override
                     public void onClick(DialogInterface dialog, int which)
                     {
@@ -101,24 +81,18 @@ public class Contacts extends Fragment {
                 AlertDialog alert=builder.create();
                 alert.show();
             }
-
-
         });
-
-//        listView.setItemChecked(1,true);
-
         Log.v("Contacts", "Number of rows: " + listView.getAdapter().getCount());
-   //     listView = FindViewById<ListView>(Resource.Id.listView1);
-     //   listView.Adapter = new HomeScreenAdapter(this, tableItems);
+
+       return rootView;
+    }
 
 
-        listView.setSelection(1);
-        listView.setItemChecked(1,true);
-        adapter.notifyDataSetChanged();
-    //    (AppCompatTextView) listView.getAdapter().getView(0,null,null).setTe
-     //   listViewAdapter.notifyDataSetChanged();
+    public static void updateMarked(){
 
-        return rootView;
+        if (rowInd < adapter.getCount()){
+            adapter.setMarked(rowInd);
+        }
     }
 
 /*    @Override

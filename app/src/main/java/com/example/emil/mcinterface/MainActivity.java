@@ -50,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private static final String TAG = MainActivity.class.getSimpleName();
     private ListView contList;
+    private Fragment tab1;
+
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -109,21 +111,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-///        Contacts fragment = (Contacts) mSectionsPagerAdapter.getItem(mViewPager.getCurrentItem());
-/*
-  //      fragment.listView.setItemChecked(2, true);
-
-        FragmentManager manager = getSupportFragmentManager();
-        Fragment fragment = manager.findFragmentById(R.id.contactList);
-*/
-/*
-        ListView lv2 = (ListView) this.findViewById(R.id.contactList);
-        ArrayAdapter lobj  = (ArrayAdapter) lv2.getAdapter();
-        AppCompatTextView v = (AppCompatTextView) lobj.getView(0,null,null);
-        v.setBackgroundColor(0x00FF00);
-        v.setText("jaaaaaaaaaaaa");
-        lobj.notifyDataSetChanged();
-        */
+        Contacts c = (Contacts) tab1;
+        c.adapter.setMarked(1);
 
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -187,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             switch (position){
                 case 0:
-                    Contacts tab1 = new Contacts();
+                    tab1 = new Contacts();
                     return tab1;
                 case 1:
                     Music tab2 = new Music();
@@ -256,6 +245,8 @@ public class MainActivity extends AppCompatActivity {
                         int tab_position = tabLayout.getSelectedTabPosition();
                         if (tab_position == 0) {
                             Contacts.rowInd++;
+                            Contacts.updateMarked();
+
                         }
                     default:
                         break;
