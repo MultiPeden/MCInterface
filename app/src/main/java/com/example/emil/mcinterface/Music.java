@@ -9,8 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
 
 /**
  * Created by Emil on 30/05/2017.
@@ -18,14 +18,16 @@ import android.widget.ListView;
 
 public class Music extends Fragment{
 
-    public static int rowInd = 0;
     public ListView listView;
-    public static MClistAdapter adapter;
+    public  MClistAdapter adapter;
+    private LayoutInflater inflater;
+    ViewGroup mContainer;
+    AlertDialog dialog;
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        mContainer = container;
         View rootView = inflater.inflate(R.layout.contacts, container, false);
 
         String[] contactItems = {"My playlist", "Driving Playlist", "Relax"};
@@ -33,6 +35,7 @@ public class Music extends Fragment{
         listView = (ListView) rootView.findViewById(R.id.contactList);
         adapter = new MClistAdapter(getActivity(), contactItems);
         listView.setAdapter(adapter);
+        this.inflater=inflater;
 
 
 
@@ -40,22 +43,8 @@ public class Music extends Fragment{
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long rowId) {
-                adapter.setMarked(position);
-                // TODO Auto-generated method stub
-                Log.v("TAG", "CLICKED row number: " + rowId);
+                onSelcetion((int) rowId);
 
-                final View view1 = inflater.inflate(R.layout.music_player, null);
-
-                AlertDialog.Builder builder =
-                        new AlertDialog.Builder(getContext()).
-                                setPositiveButton("Close", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                    }
-                                }).
-                                setView(view1);
-                builder.create().show();
             }
 
         });
@@ -65,10 +54,41 @@ public class Music extends Fragment{
         return rootView;
     }
 
-    public static void updateMarked(){
 
-        if (rowInd < adapter.getCount()){
-            adapter.setMarked(rowInd);
+    public  boolean setMarked(int pos){
+        if (pos < adapter.getCount() && pos >= 0 &&  adapter.setMarked(pos)  ) {
+            return true;
         }
+        return false;
     }
+
+    public void onSelcetion(int rowId ){
+
+        if(dialog != null && dialog.isShowing()){
+            dialog.dismiss();
+        }else {
+            Log.v("TAG", "CLICKED row number: " + rowId);
+
+            final View view1 = inflater.inflate(R.layout.music_player, null);
+
+
+            AlertDialog.Builder builder =
+                    new AlertDialog.Builder(getContext()).
+                            setPositiveButton("Close", new DialogInterface.OnClickListener() {
+                                public DialogInterface dialog;
+
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    this.dialog = dialog;
+                                    dialog.dismiss();
+                                }
+                            }).
+                            setView(view1);
+
+            builder.create();
+            this.dialog = builder.show();
+        }
+
+    }
+
 }

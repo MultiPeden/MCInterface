@@ -10,9 +10,6 @@ import android.widget.BaseAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 
 /**
  * Created by ptr_m on 01/06/2017.
@@ -57,8 +54,6 @@ public class MClistAdapter extends BaseAdapter {
             cont.setBackgroundColor(Color.parseColor("#000000"));
             text.setTextColor(Color.parseColor("#ffffff"));
         }
-        // text.invalidate();
-        // cont.invalidate();
         return vi;
     }
 
@@ -72,18 +67,15 @@ public class MClistAdapter extends BaseAdapter {
         this.notifyDataSetChanged();
     }
 
-    public void editTest(int position){
-        if(position < getCount()){
-            strings[position] = "oooooooooooooooooo";
-            this.notifyDataSetChanged();
-        }
-    }
 
-    public void setMarked(int position){
+
+    public boolean setMarked(int position){
         if(position < getCount()){
             marked = position;
             this.notifyDataSetChanged();
+            return true;
         }
+        return false;
     }
 
 

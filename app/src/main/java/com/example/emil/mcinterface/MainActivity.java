@@ -1,40 +1,25 @@
 package com.example.emil.mcinterface;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-
-
-import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.physicaloid.lib.Physicaloid;
 import com.physicaloid.lib.usb.driver.uart.ReadLisener;
 
 import java.io.UnsupportedEncodingException;
-
-import static com.example.emil.mcinterface.R.color.colorAccent;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -50,7 +35,11 @@ public class MainActivity extends AppCompatActivity {
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private static final String TAG = MainActivity.class.getSimpleName();
     private ListView contList;
-    private Fragment tab1;
+    private Contacts contacts;
+    private Music music;
+    private Navigation navi;
+    private int conInd;
+
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -66,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
     //    getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
      //           WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
+
+        conInd =0;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
@@ -79,25 +70,8 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-//        mViewPager.setCurrentItem(2);
-//        ListView lview = (ListView) mViewPager.getChildAt(2);
-//        lview.setItemChecked(1, true);
+        mPhysicaloid = new Physicaloid(this);
 
-
-        //Contacts fragment = (Contacts) mSectionsPagerAdapter.getItem(mViewPager.getCurrentItem());
-
-       // contList = fragment.listView;
-
-    //    Context context = fragment.getContext();
-
-      //  ListView lv =(ListView) fragment.findViewById(R.id.contactList);
-       // lv.setItemChecked(2, true);
-        //View activeView = fragment.getView();
-//        activeView.setBackgroundColor(getResources().getColor(colorAccent));
-
-                mPhysicaloid = new Physicaloid(this);
-
-        //navigateFromSeq("0");
 
     }
 
@@ -110,9 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
-        Contacts c = (Contacts) tab1;
-        c.adapter.setMarked(1);
+    //    navigateFromSeq("02");
 
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -144,14 +116,6 @@ public class MainActivity extends AppCompatActivity {
                             return;
                         }
                         navigateFromSeq(readStr);
-                        // UI thread
-                        // tvAppend(tvRead, readStr);
-                        // draws gesture on screen
-
-
-
-                        //  drawGesture(readStr);
-                        //   drawGesture("0 1 2 3 0");
                     }
                 });
             }
@@ -176,14 +140,14 @@ public class MainActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             switch (position){
                 case 0:
-                    tab1 = new Contacts();
-                    return tab1;
+                    contacts = new Contacts();
+                    return contacts;
                 case 1:
-                    Music tab2 = new Music();
-                    return tab2;
+                     music = new Music();
+                    return music;
                 case 2:
-                    Navigation tab3 = new Navigation();
-                    return tab3;
+                    navi = new Navigation();
+                    return navi;
                 default:
                     return null;
 
@@ -230,54 +194,90 @@ public class MainActivity extends AppCompatActivity {
 
                 TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
                 switch (s){
-                    case "3":
-                        TabLayout.Tab tab1 = tabLayout.getTabAt(0);
-                        tab1.select();
-                        break;
-                    case "0":
-                        TabLayout.Tab tab2 = tabLayout.getTabAt(1);
-                        tab2.select();
-                        break;
-                    case "1":
-                        TabLayout.Tab tab3 = tabLayout.getTabAt(2);
-                        tab3.select();
-                        break;
-                    case "02":
+                    case "9":
+
+
                         tab_position = tabLayout.getSelectedTabPosition();
                         switch (tab_position) {
                             case 0:
-                                Contacts.rowInd++;
-                                Contacts.updateMarked();
+                                contacts.onSelcetion(conInd);
                                 break;
                             case 1:
-                                Music.rowInd++;
-                                Music.updateMarked();
+                                music.onSelcetion(conInd);
                                 break;
                             case 2:
-                                Navigation.rowInd++;
-                                Navigation.updateMarked();
+                                navi.onSelcetion(conInd);
                                 break;
                             default:
                                 break;
                         }
+                        break;
+                    case "3":
+                        conInd =  0;
+                        TabLayout.Tab tab1 = tabLayout.getTabAt(0);
+                        contacts.setMarked(conInd);
+                        tab1.select();
+                        break;
+                    case "0":
+                        conInd =  0;
+                        TabLayout.Tab tab2 = tabLayout.getTabAt(1);
+                        tab2.select();
+                        music.setMarked(conInd);
+                        break;
+                    case "1":
+                        conInd =  0;
+                        TabLayout.Tab tab3 = tabLayout.getTabAt(2);
+                        tab3.select();
+                        navi.setMarked(conInd);
+                        break;
+                    case "02":
+                        tab_position = tabLayout.getSelectedTabPosition();
+
+
+                        switch (tab_position) {
+                            case 0:
+                                if (contacts.setMarked(conInd+1)){
+                                    conInd =  conInd + 1;
+                                }
+                                break;
+                            case 1:
+
+                                if (music.setMarked(conInd+1)){
+                                    conInd =  conInd + 1;
+                                }
+                                break;
+                            case 2:
+                                if (navi.setMarked(conInd+1)){
+                                    conInd =  conInd + 1;
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                        break;
                     case "20":
                         tab_position = tabLayout.getSelectedTabPosition();
                         switch (tab_position) {
                             case 0:
-                                Contacts.rowInd--;
-                                Contacts.updateMarked();
+                                if (contacts.setMarked(conInd-1)){
+                                    conInd =  conInd - 1;
+                                }
                                 break;
                             case 1:
-                                Music.rowInd--;
-                                Music.updateMarked();
+
+                                if (music.setMarked(conInd-1)){
+                                    conInd =  conInd - 1;
+                                }
                                 break;
                             case 2:
-                                Navigation.rowInd--;
-                                Navigation.updateMarked();
+                                if (navi.setMarked(conInd-1)){
+                                    conInd =  conInd - 1;
+                                }
                                 break;
                             default:
                                 break;
                         }
+                        break;
                     default:
                         break;
                 }
