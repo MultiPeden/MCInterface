@@ -14,7 +14,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.physicaloid.lib.Physicaloid;
 import com.physicaloid.lib.usb.driver.uart.ReadLisener;
@@ -181,17 +180,8 @@ public class MainActivity extends AppCompatActivity {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                Context context = getApplicationContext();
-
-
                 final String s = str.replaceAll("\\s", "");
-
-                int duration = Toast.LENGTH_SHORT;
-
-                Toast toast = Toast.makeText(context, s, duration);
-                toast.show();
                 int tab_position;
-
                 TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
                 switch (s){
                     case "9":
